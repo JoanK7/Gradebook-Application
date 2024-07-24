@@ -35,13 +35,16 @@ def calculate_ranking():
     else:
         print(f"No grades found for student with email {email}")
 
-def search_by_grade():
-    grade = input("Enter grade to search for: ")
-    with open('registrations.csv', 'r') as csvfile:
-        reader = csv.reader(csvfile)
-        for row in reader:
-            if row[2] == grade:
-                print(f"Student {row[0]} received a grade of {grade} in course {row[1]}")
+def search_by_gpa():
+    min_gpa = float(input("Enter minimum GPA: "))
+    max_gpa = float(input("Enter maximum GPA: "))
+    results = Registration.search_by_gpa(min_gpa, max_gpa)
+    if results:
+        print("Search results:")
+        for result in results:
+            print(result)
+    else:
+        print("No students found with GPA in the specified range.")
 
 def generate_transcript():
     email = input("Enter student email to generate transcript: ")
@@ -63,7 +66,7 @@ def main():
         print("2. Add Course")
         print("3. Register Student for Course")
         print("4. Calculate Ranking")
-        print("5. Search by Grade")
+        print("5. Search by GPA")
         print("6. Generate Transcript")
         print("7. Exit")
 
@@ -78,7 +81,7 @@ def main():
         elif choice == '4':
             calculate_ranking()
         elif choice == '5':
-            search_by_grade()
+            search_by_gpa()
         elif choice == '6':
             generate_transcript()
         elif choice == '7':
