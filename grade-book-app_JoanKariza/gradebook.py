@@ -1,80 +1,47 @@
 #!/usr/bin/python3
 class GradeBook:
     def __init__(self):
+        # Initialize the GradeBook with empty student and course lists
         self.student_list = []
         self.course_list = []
 
-    def add_student(self):
+    def add_student(self, email, names):
         # Add a new student to the gradebook
-        email = input("Enter student email: ")
-        names = input("Enter student names: ")
-        student = Student(email, names)
-        self.student_list.append(student)
-        print(f"Student {names} added successfully.")
+        new_student = Student(email, names)
+        self.student_list.append(new_student)
 
-    def add_course(self):
+    def add_course(self, name, trimester, credits):
         # Add a new course to the gradebook
-        name = input("Enter course name: ")
-        trimester = input("Enter trimester: ")
-        credits = int(input("Enter credits: "))
-        course = Course(name, trimester, credits)
-        self.course_list.append(course)
-        print(f"Course {name} added successfully.")
+        new_course = Course(name, trimester, credits)
+        self.course_list.append(new_course)
 
-    def register_student_for_course(self):
-        # Register an existing student for an existing course
-        email = input("Enter student email: ")
-        course_name = input("Enter course name: ")
-        student = next((s for s in self.student_list if s.email == email), None)
+    def register_student_for_course(self, student_email, course_name, grade):
+        # Register a student for a course with the specified grade
+        student = next((s for s in self.student_list if s.email == student_email), None)
         course = next((c for c in self.course_list if c.name == course_name), None)
         if student and course:
-            student.register_for_course(course)
-            print(f"{student.names} registered for {course.name}.")
-        else:
-            print("Student or course not found.")
+            student.register_for_course(course, grade)
 
-    def save_student_grade(self):
-        # Save a grade for a student in a specific course
-        email = input("Enter student email: ")
-        course_name = input("Enter course name: ")
-        grade = float(input("Enter grade: "))
-        student = next((s for s in self.student_list if s.email == email), None)
-        if student:
-            for i, (course, _) in enumerate(student.courses_registered):
-                if course.name == course_name:
-                    student.courses_registered[i] = (course, grade)
-                    print(f"Grade saved for {student.names} in {course_name}.")
-                    return
-            print("Course not found for this student.")
-        else:
-            print("Student not found.")
+    def calculate_GPA(self):
+        # Calculate the GPA for each student in the gradebook
+        for student in self.student_list:
+            student.calculate_GPA()
 
     def calculate_ranking(self):
-        # Calculate and display the ranking of students based on GPA
-        for student in self.student_list:
-            student.calculate_gpa()
-        self.student_list.sort(key=lambda s: s.gpa, reverse=True)
-        for i, student in enumerate(self.student_list, 1):
-            print(f"{i}. {student.names}: GPA {student.gpa:.2f}")
+        # Calculate and print the ranking of students based on their GPA
+        self.student_list.sort(key=lambda s: s.GPA, reverse=True)
+        for rank, student in enumerate(self.student_list, start=1):
+            print(f"{rank}. {student.email}: {student.GPA}")
 
-    def search_by_grade(self):
-        # Search and display students within a specified GPA range
-        min_grade = float(input("Enter minimum GPA: "))
-        max_grade = float(input("Enter maximum GPA: "))
-        filtered_students = [s for s in self.student_list if min_grade <= s.gpa <= max_grade]
-        for student in filtered_students:
-            print(f"{student.names}: GPA {student.gpa:.2f}")
+    def search_by_grade(self, min_gpa, max_gpa):
+        # Search and return students whose GPA falls within the specified range
+        filtered_students = [s for s in self.student_list if min_gpa <= s.GPA <= max_gpa]
+        return filtered_students
 
     def generate_transcript(self):
-        # Generate and display a transcript for a specific student
-        email = input("Enter student email: ")
-        student = next((s for s in self.student_list if s.email == email), None)
-        if student:
-            print(f"\nTranscript for {student.names}")
-            print(f"Email: {student.email}")
-            print("Courses:")
+        # Generate and print the transcript for each student in the gradebook
+        for student in self.student_list:
+            print(f"Transcript for {student.names} ({student.email}):")
             for course, grade in student.courses_registered:
-                print(f"- {course.name}: Grade {grade}")
-            print(f"GPA: {student.gpa:.2f}")
-        else:
-            print("Student not found.")
+                print(f"  - {course.name}: {grade}")
+            print(f"GPA: {student.GPA}")
