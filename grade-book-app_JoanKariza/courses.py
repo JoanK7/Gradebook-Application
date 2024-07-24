@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 class Course:
+    """Class to represent a course."""
+
     def __init__(self, name, trimester, credits):
         self.name = name
         self.trimester = trimester
