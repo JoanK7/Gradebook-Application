@@ -46,5 +46,17 @@ class TestGradeBook(unittest.TestCase):
         self.assertIsNotNone(gpa)
         self.assertAlmostEqual(gpa, 4.0, places=1)
 
+    def test_search_by_gpa(self):
+        # Ensure some registrations exist
+        student = Student("student@example.com", "Test Student")
+        student.save_to_csv()
+        course = Course("Test Course", "Fall 2023", 3)
+        course.save_to_csv()
+        registration = Registration("student@example.com", "Test Course", "A")
+        registration.save_to_csv()
+
+        results = Registration.search_by_gpa(3.5, 4.0)
+        self.assertGreater(len(results), 0)
+
 if __name__ == "__main__":
     unittest.main()
