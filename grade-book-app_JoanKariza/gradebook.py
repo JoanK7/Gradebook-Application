@@ -1,12 +1,64 @@
 #!/usr/bin/python3
-from gradebook_class import GradeBook
+import csv
+from student import Student
+from course import Course
+from gradebook_class import Registration
+
+def add_student():
+    email = input("Enter student email: ")
+    name = input("Enter student names: ")
+    student = Student(email, name)
+    student.save_to_csv()
+    print("Student record created successfully!")
+
+def add_course():
+    name = input("Enter course name: ")
+    trimester = input("Enter course trimester: ")
+    credits = float(input("Enter course credits: "))
+    course = Course(name, trimester, credits)
+    course.save_to_csv()
+    print("Course record created successfully!")
+
+def register_student_for_course():
+    student_email = input("Enter student email: ")
+    course_name = input("Enter course name: ")
+    grade = input("Enter grade: ")
+    registration = Registration(student_email, course_name, grade)
+    registration.save_to_csv()
+    print("Student registered for course successfully!")
+
+def calculate_ranking():
+    email = input("Enter student email to calculate GPA: ")
+    gpa = Registration.calculate_gpa(email)
+    if gpa is not None:
+        print(f"The GPA for {email} is {gpa:.2f}")
+    else:
+        print(f"No grades found for student with email {email}")
+
+def search_by_grade():
+    grade = input("Enter grade to search for: ")
+    with open('registrations.csv', 'r') as csvfile:
+        reader = csv.reader(csvfile)
+        for row in reader:
+            if row[2] == grade:
+                print(f"Student {row[0]} received a grade of {grade} in course {row[1]}")
+
+def generate_transcript():
+    email = input("Enter student email to generate transcript: ")
+    with open('registrations.csv', 'r') as csvfile:
+        reader = csv.reader(csvfile)
+        print(f"Transcript for {email}:")
+        for row in reader:
+            if row[0] == email:
+                print(f"Course: {row[1]}, Grade: {row[2]}")
+        gpa = Registration.calculate_gpa(email)
+        if gpa is not None:
+            print(f"GPA: {gpa:.2f}")
 
 def main():
-    """Main function to run the GradeBook application."""
-    gradebook = GradeBook()
-    
     while True:
-        print("\nGradeBook Menu")
+        print("\nWelcome to the Grade Book Application!")
+        print("Please select an action:")
         print("1. Add Student")
         print("2. Add Course")
         print("3. Register Student for Course")
@@ -16,35 +68,21 @@ def main():
         print("7. Exit")
 
         choice = input("Enter your choice: ")
+
         if choice == '1':
-            email = input("Enter student email: ")
-            names = input("Enter student names: ")
-            gradebook.add_student(email, names)
+            add_student()
         elif choice == '2':
-            name = input("Enter course name: ")
-            trimester = input("Enter course trimester: ")
-            credits = int(input("Enter course credits: "))
-            gradebook.add_course(name, trimester, credits)
+            add_course()
         elif choice == '3':
-            student_email = input("Enter student email: ")
-            course_name = input("Enter course name: ")
-            grade = float(input("Enter grade: "))
-            gradebook.register_student_for_course(student_email, course_name, grade)
+            register_student_for_course()
         elif choice == '4':
-            ranking = gradebook.calculate_ranking()
-            for student in ranking:
-                print(f"{student.email} - GPA: {student.GPA}")
+            calculate_ranking()
         elif choice == '5':
-            min_gpa = float(input("Enter minimum GPA: "))
-            max_gpa = float(input("Enter maximum GPA: "))
-            results = gradebook.search_by_grade(min_gpa, max_gpa)
-            for student in results:
-                print(f"{student.email} - GPA: {student.GPA}")
+            search_by_grade()
         elif choice == '6':
-            student_email = input("Enter student email: ")
-            transcript = gradebook.generate_transcript(student_email)
-            print(transcript)
+            generate_transcript()
         elif choice == '7':
+            print("Exiting the application.")
             break
         else:
             print("Invalid choice. Please try again.")
