@@ -1,39 +1,61 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 def main():
-    # Main function to run the Gradebook application
+    # Main program to interact with the gradebook
     gradebook = GradeBook()
 
     while True:
-        print("\nGradebook Application")
+        # Display menu options for the user
+        print("\nGrade Book Menu:")
         print("1. Add Student")
         print("2. Add Course")
         print("3. Register Student for Course")
-        print("4. Save Student Grade")
+        print("4. Calculate GPA")
         print("5. Calculate Ranking")
         print("6. Search by Grade")
         print("7. Generate Transcript")
         print("8. Exit")
 
-        choice = input("Enter your choice (1-8): ")
+        # Get user choice
+        choice = input("Enter your choice: ")
 
         if choice == '1':
-            gradebook.add_student()
+            # Add a new student
+            email = input("Enter student email: ")
+            names = input("Enter student names: ")
+            gradebook.add_student(email, names)
         elif choice == '2':
-            gradebook.add_course()
+            # Add a new course
+            name = input("Enter course name: ")
+            trimester = input("Enter course trimester: ")
+            credits = int(input("Enter course credits: "))
+            gradebook.add_course(name, trimester, credits)
         elif choice == '3':
-            gradebook.register_student_for_course()
+            # Register a student for a course with a grade
+            student_email = input("Enter student email: ")
+            course_name = input("Enter course name: ")
+            grade = float(input("Enter grade: "))
+            gradebook.register_student_for_course(student_email, course_name, grade)
         elif choice == '4':
-            gradebook.save_student_grade()
+            # Calculate the GPA for each student
+            gradebook.calculate_GPA()
         elif choice == '5':
+            # Calculate and display the ranking of students
             gradebook.calculate_ranking()
         elif choice == '6':
-            gradebook.search_by_grade()
+            # Search students by GPA range
+            min_gpa = float(input("Enter minimum GPA: "))
+            max_gpa = float(input("Enter maximum GPA: "))
+            students = gradebook.search_by_grade(min_gpa, max_gpa)
+            for student in students:
+                print(f"{student.email}: {student.GPA}")
         elif choice == '7':
+            # Generate and display transcripts for all students
             gradebook.generate_transcript()
         elif choice == '8':
-            print("Thank you for using the Gradebook Application. Goodbye!")
+            # Exit the program
             break
         else:
+            # Handle invalid choice
             print("Invalid choice. Please try again.")
 
 if __name__ == "__main__":
