@@ -44,3 +44,23 @@ class Registration:
             'F': 0.0
         }
         return grade_map.get(grade, 0.0)
+
+    @staticmethod
+    def search_by_gpa(min_gpa, max_gpa):
+        results = []
+        with open('students.csv', 'r') as student_file:
+            students = {row[0]: row[1] for row in csv.reader(student_file)}
+
+        with open('registrations.csv', 'r') as csvfile:
+            reader = csv.reader(csvfile)
+            gpa_dict = {}
+            for row in reader:
+                student_email = row[0]
+                gpa = Registration.calculate_gpa(student_email)
+                if gpa is not None and min_gpa <= gpa <= max_gpa:
+                    gpa_dict[student_email] = gpa
+
+        for email, gpa in gpa_dict.items():
+            results.append(f">> {students[email]} (GPA: {gpa:.2f})")
+
+        return results
